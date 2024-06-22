@@ -111,7 +111,7 @@ class UserController extends Controller
 
         $cookie = cookie('jwt', $token);
 
-        return response()->json(['status' => true, 'message' => 'Пользователь успешно авторизирован'])->withCookie($cookie);
+        return response()->json(['status' => true, 'message' => 'Пользователь успешно авторизирован','token' => $token])->withCookie($cookie);
     }
 
     public function logout(){
