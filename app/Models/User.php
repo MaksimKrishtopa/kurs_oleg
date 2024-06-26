@@ -20,7 +20,6 @@ class User extends Authenticatable
         'phone',
         'email',
         'password',
-        'role_id', // Добавлено поле role_id
     ];
 
     protected $hidden = [
@@ -29,8 +28,4 @@ class User extends Authenticatable
         'updated_at'
     ];
 
-    // Добавляем роль пользователя
-    public function isAdmin() {
-        return $this->role_id === 1;
-    }
 }

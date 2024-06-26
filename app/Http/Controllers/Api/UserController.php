@@ -86,41 +86,32 @@ class UserController extends Controller
         return response()->json(['status' => true, 'message' => 'Пользователь успешно зарегистрирован']);
     }
 
-    public function login(Request $request)
-    {
+    public function login(Request $request){
+
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required',
+        'email' => 'required|email',
+        'password' => 'required',
         ], [
             'email.required' => 'Поле Почта обязательно для заполнения',
             'email.email' => 'Поле Почта должно содержать валидный адрес эл. почты',
             'password.required' => 'Поле Пароль обязательно для заполнения',
         ]);
-    
-        if ($validator->fails()) {
+        
+        if($validator->fails()){
             return response()->json(['status' => false, 'message' => 'Ошибка при попытке авторизации', 'errors' => $validator->errors()], 422);
         }
-    
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        
+        if(!Auth::attempt($request->all())){
             return response()->json(['status' => false, 'message' => 'Введенные данные не относятся к существующему аккаунту'], 401);
         }
-    
+        
         $user = Auth::user();
-    
+        
         $token = $user->createToken('token', ['*'], now()->addHours(7)->addMinutes(60))->plainTextToken;
-    
+        
         $cookie = cookie('jwt', $token);
-    
-        return response()->json([
-            'status' => true,
-            'message' => 'Пользователь успешно авторизирован',
-            'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'email' => $user->email,
-                'role_id' => $user->role_id,
-            ]
-        ])->withCookie($cookie);
+        
+        return response()->json(['status' => true, 'data' => $user, 'message' => 'Пользователь успешно авторизирован'])->withCookie($cookie);
     }
     
 
